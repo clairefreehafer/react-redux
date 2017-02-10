@@ -12,7 +12,7 @@ import Sidebar from '../components/Sidebar';
 import Player from '../components/Player';
 
 import { convertAlbum, convertAlbums, convertSong, skip } from '../utils';
-import { toggle, toggleOne, load, startSong, play, pause, next, prev } from '../action-creators/player';
+import { toggle, toggleOne, load, startSong, play, pause, next, prev, setProgress } from '../action-creators/player';
 
 export default class AppContainer extends Component {
 
@@ -56,8 +56,8 @@ export default class AppContainer extends Component {
 
     AUDIO.addEventListener('ended', () =>
       this.next());
-    AUDIO.addEventListener('timeupdate', () =>
-      this.setProgress(AUDIO.currentTime / AUDIO.duration));
+    // AUDIO.addEventListener('timeupdate', () =>
+    //   this.setProgress(AUDIO.currentTime / AUDIO.duration));
   }
 
   onLoad (albums, artists, playlists) {
@@ -101,7 +101,7 @@ export default class AppContainer extends Component {
   }
 
   setProgress (progress) {
-    this.setState({ progress: progress });
+    store.dispatch(setProgress())
   }
 
   selectAlbum (albumId) {
@@ -211,7 +211,7 @@ export default class AppContainer extends Component {
           currentSong={this.state.player.currentSong}
           currentSongList={this.state.player.currentSongList}
           isPlaying={this.state.player.isPlaying}
-          progress={this.state.progress}
+          progress={this.state.player.progress}
           next={this.next}
           prev={this.prev}
           toggle={this.toggle}

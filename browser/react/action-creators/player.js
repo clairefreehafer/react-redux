@@ -1,16 +1,21 @@
 import {START_PLAYING, STOP_PLAYING, SET_CURRENT_SONG, SET_LIST, SET_PROGRESS } from '../constants';
 
-const startPlaying = () => ({ type: START_PLAYING });
-const stopPlaying = () => ({type: STOP_PLAYING});
+export const startPlaying = () => ({ type: START_PLAYING });
+export const stopPlaying = () => ({type: STOP_PLAYING});
 
-const setCurrentSong = (currentSong) => (
+export const progressSet = (progress) => ({
+  type: SET_PROGRESS,
+  progress
+});
+
+export const setCurrentSong = (currentSong) => (
 	{type: SET_CURRENT_SONG,
 	currentSong});
 
-const setCurrentSongList = (currentSongList) => ({
+export const setCurrentSongList = (currentSongList) => ({
 	type: SET_LIST,
 	currentSongList
-})
+});
 
 //Async action creators: Why are these async??
 export const play = () => dispatch => {
@@ -21,6 +26,11 @@ export const play = () => dispatch => {
 export const pause = () => dispatch => {
   AUDIO.pause();
   dispatch(stopPlaying());
+};
+
+export const setProgress = (progress) => {
+  AUDIO.addEventListener('timeupdate', () =>
+    dispatch(progressSet(AUDIO.currentTime / AUDIO.duration)));
 };
 
 export const load = (currentSong, currentSongList) => dispatch => {
@@ -38,11 +48,11 @@ export const startSong = (song, list) => dispatch => {
 
 export const toggle = () => (dispatch, getState) => {
   const { isPlaying } = getState().player;
-  if (isPlaying) dispatch(pause()); 
+  if (isPlaying) dispatch(pause());
   else dispatch(play());
 };
 
-export const toggleOne = (selectedSong, selectedSongList) => 
+export const toggleOne = (selectedSong, selectedSongList) =>
   (dispatch, getState) => {
     const { currentSong } = getState().player;
     if (selectedSong.id !== currentSong.id)
@@ -50,12 +60,13 @@ export const toggleOne = (selectedSong, selectedSongList) =>
     else dispatch(toggle());
 };
 
-export const next = () => 
+export const next = () =>
   (dispatch, getState) => {
     dispatch(startSong(...skip(1, getState().player)));
 };
 
-export const prev = () => 
+export const prev = () =>
   (dispatch, getState) => {
     dispatch(startSong(...skip(-1, getState().player)));
 };
+
