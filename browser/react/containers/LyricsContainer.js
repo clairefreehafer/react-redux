@@ -29,7 +29,9 @@ export default class LyricsContainer extends Component {
 		})
 	}
 
-	handleSubmit() {
+	handleSubmit(evt) {
+		evt.preventDefault();
+
 		if (this.state.artistQuery && this.state.songQuery) {
 			store.dispatch(fetchLyrics(this.state.artistQuery, this.state.songQuery));
 
@@ -56,7 +58,7 @@ export default class LyricsContainer extends Component {
 	render() {
 		return(
 			<Lyrics
-				text={this.state.text}
+				text={this.state.lyrics.text}
 				setArtist={this.handleArtistInput}
 				setSong = {this.handleSongInput}
 				artistQuery={this.state.artistQuery}
